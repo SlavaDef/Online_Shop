@@ -1,0 +1,31 @@
+INSERT INTO clients (date,name,good) VALUES // вставити в таблицю (змінні таблиці(стовпці) ) + що вставити
+    ('21-11-2023','Olia','dick');
+
+SELECT * FROM clients // вибрати все з таблиці clients
+
+SELECT name, good,quantity_of_goods FROM clients // запит по трех коланкам із таблиці clients
+
+SELECT * FROM clients WHERE id=5
+
+SELECT * FROM clients ORDER BY quantity_of_goods // групування по кількості від меншого до більшого
+
+SELECT * FROM clients ORDER BY quantity_of_goods DESC // від більшого до меншого
+
+SELECT good, count(quantity_of_goods) FROM clients GROUP BY good // загальна кількість товару
+
+UPDATE clients SET quantity_of_goods = 8 WHERE quantity_of_goods = null // оновити значення рядків в таблиці clients
+
+UPDATE clients SET name = 'Kelvin' WHERE name = 'Vlad'
+
+UPDATE clients SET quantity_of_goods = 5 WHERE id = 6
+
+{
+    "id": 5,
+    "date": "2023-11-20T22:00:00.000+00:00",
+    "name": "Ann",
+    "good": "coffe",
+    "quantity_of_goods": 10
+}
+
+
+

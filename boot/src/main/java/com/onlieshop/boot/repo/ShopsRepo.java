@@ -5,4 +5,6 @@ import org.springframework.data.repository.CrudRepository;
 
 // <Shop,Long > з якою сутністю працюємо + яке у нього id (який тип)
 public interface ShopsRepo extends CrudRepository<Shop,Long> {
+
+
 }

@@ -5,9 +5,6 @@ import com.onlieshop.boot.repo.ClientRepo;
 import com.onlieshop.boot.service.ClientService;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-
 
 @Service
 public class ClientServiceImp implements ClientService {
@@ -29,8 +26,27 @@ public class ClientServiceImp implements ClientService {
 
     }
 
-    public Optional<Clients> findClientById2(Long id) {
-        return clientRepo.findById(id);
-        //  return clientRepo.findById(id).orElseThrow();
+    @Override
+    public Clients deleteById(Long id) {
+      Clients client =  clientRepo.findById(id).orElseThrow();
+      clientRepo.delete(client);
+      return client;
+
     }
+
+    @Override
+    public void saveClient(Clients client) {
+        clientRepo.save(client);
+    }
+
+    @Override
+    public boolean updateClient(Clients client,Long id) {
+        if(clientRepo.findById(id).isPresent()){
+            client.setId(id);
+            clientRepo.save(client);
+            return true;
+        }
+         return false;
+    }
+
 }

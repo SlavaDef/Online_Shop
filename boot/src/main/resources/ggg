@@ -28,4 +28,6 @@ UPDATE clients SET quantity_of_goods = 5 WHERE id = 6
 }
 
 
+http://localhost:8080/new/update/2
+
 

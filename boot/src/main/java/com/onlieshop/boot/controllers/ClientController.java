@@ -1,7 +1,10 @@
 package com.onlieshop.boot.controllers;
 
 import com.onlieshop.boot.entity.Clients;
+import com.onlieshop.boot.models.ClientsDto;
+import com.onlieshop.boot.repo.ClientRepo;
 import com.onlieshop.boot.service.imp.ClientServiceImp;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,14 +14,16 @@ import java.util.Date;
 
 
 @RestController
-@RequestMapping("/base")
+@RequestMapping("/baze")
 public class ClientController {
 
     private final ClientServiceImp clientServiceImp;
+    private final ClientRepo clientRepo;
 
     @Autowired
-    public ClientController(ClientServiceImp clientServiceImp) {
+    public ClientController(ClientServiceImp clientServiceImp,ClientRepo clientRepo) {
         this.clientServiceImp = clientServiceImp;
+        this.clientRepo = clientRepo;
     }
 
     @GetMapping // Clien Baze of USA
@@ -47,6 +52,12 @@ public class ClientController {
                 ? new ResponseEntity<>(client, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+    // Another case of realization method find client by id without repo and service
+    @GetMapping("/{id}")
+    public Clients get(@PathVariable("id") Clients entity){
+        return entity;
+    }
+
 
     // delete Client by id
     @PostMapping(value = "/delete/{id}")
@@ -71,6 +82,14 @@ public class ClientController {
     public ResponseEntity<?> create(@RequestBody Clients client) {
         clientServiceImp.saveClient(client);
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    // create a new client and return it, without servise
+     @PostMapping("/create")
+    public Clients create(@RequestBody ClientsDto dto){
+        Clients clientEntity = new Clients();
+        BeanUtils.copyProperties(dto,clientEntity);
+        return clientRepo.save(clientEntity);
     }
 
     // @PostMapping(value = "/update/{id}")
@@ -99,5 +118,5 @@ public class ClientController {
                 ? new ResponseEntity<>(HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
-    
+
 }

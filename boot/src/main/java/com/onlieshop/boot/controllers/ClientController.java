@@ -10,10 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 
 @RestController
 @RequestMapping("/baze")
@@ -34,15 +30,11 @@ public class ClientController {
     }
 
     // find all clients
-    @GetMapping(value = "/clients")
+    @GetMapping(value = "/getAll")
     public Iterable<Clients> getAllClients() {
         return clientServiceImp.findAllClients();
     }
 
-    @GetMapping("/odd")
-    public Iterable<Clients> getOddClients(){ // without Iterable does'not work
-        return clientRepo.findAllByIds();
-    }
 
     // find client by id
     @GetMapping("/client/{id}")  // All work, don't forget about "/clients/{id}"
@@ -66,7 +58,38 @@ public class ClientController {
     }
 
 
-    // delete Client by id
+    // save new client by @PostMapping
+    @PostMapping(value = "/save")
+    public ResponseEntity<?> create(@RequestBody Clients client) {
+        clientServiceImp.saveClient(client);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    // create a new client and return it, without servise by @PostMapping
+     @PostMapping("/create")
+    public Clients create(@RequestBody ClientsDto dto){
+        Clients clientEntity = new Clients();
+        BeanUtils.copyProperties(dto,clientEntity);
+        return clientRepo.save(clientEntity);
+    }
+    // another way of update new client with Put(need) by @PutMapping
+    @PutMapping("/{id}")
+    public Clients update(@RequestBody ClientsDto dto, @PathVariable("id") Clients entity){
+        BeanUtils.copyProperties(dto,entity);
+        return clientRepo.save(entity);
+    }
+
+    // update client by @PutMapping
+    @PutMapping(value = "/update/{id}")
+    public ResponseEntity<?> update2(@PathVariable(name = "id") Long id, @RequestBody Clients client) {
+        final boolean updated = clientServiceImp.updateClient(client, id);
+
+        return updated
+                ? new ResponseEntity<>(HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+    }
+
+    // delete Client by id by @PostMapping
     @PostMapping(value = "/delete/{id}")
     public String deleteClient(@PathVariable(name = "id") Long id) {
         clientServiceImp.deleteById(id);
@@ -74,7 +97,7 @@ public class ClientController {
         return "client sucsesfully has been deleted";
     }
 
-    // Another case of realization method deleteClient
+    // Another case of realization method deleteClient by @PostMapping
     @PostMapping(value = "/delete2/{id}")
     public ResponseEntity<Clients> delete(@PathVariable(name = "id") Long id) {
         final Clients client = clientServiceImp.deleteById(id);
@@ -83,47 +106,10 @@ public class ClientController {
                 ? new ResponseEntity<>(client, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-
-    // save new client
-    @PostMapping(value = "/save")
-    public ResponseEntity<?> create(@RequestBody Clients client) {
-        clientServiceImp.saveClient(client);
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
-    // create a new client and return it, without servise
-     @PostMapping("/create")
-    public Clients create(@RequestBody ClientsDto dto){
-        Clients clientEntity = new Clients();
-        BeanUtils.copyProperties(dto,clientEntity);
-        return clientRepo.save(clientEntity);
-    }
-
-    // @PostMapping(value = "/update/{id}")
-    public ResponseEntity<?> update(@PathVariable(name = "id") Long id, Clients client,
-                                    @RequestParam Date date,
-                                    @RequestParam String name,
-                                    @RequestParam String good,
-                                    @RequestParam Long quantity_of_goods) {
-
-        client = clientServiceImp.findClientById(id);
-        client.setDate(date);
-        client.setName(name);
-        client.setGood(good);
-        client.setQuantity_of_goods(quantity_of_goods);
-
-        //  clientServiceImp.updateClient(client);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    // update client
-    @PutMapping(value = "/update/{id}")
-    public ResponseEntity<?> update2(@PathVariable(name = "id") Long id, @RequestBody Clients client) {
-        final boolean updated = clientServiceImp.updateClient(client, id);
-
-        return updated
-                ? new ResponseEntity<>(HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+    // Another case of realization method deleteClient without servise only with repo by @DeleteMapping
+    @DeleteMapping("/{id}")
+    public void deleteClientById(@PathVariable(name = "id") Clients client){
+        clientRepo.delete(client);
     }
 
 }

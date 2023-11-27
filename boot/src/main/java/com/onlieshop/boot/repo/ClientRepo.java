@@ -15,10 +15,13 @@ public interface ClientRepo extends CrudRepository<Clients,Long> {
     public Iterable<Clients> findAllByNames2();
 
     @Query("from Clients where id>5")
-    public Iterable<Clients> findAllByIds(); // return all поля
+    public Iterable<Clients> findAllByIds(); // return all clients where id > 5
 
-    @Query("from Clients where id=5")
-    public Iterable<Clients> findAllByOddIds(); //
+    @Query("from Clients where mod(id,2)=0")
+    public Iterable<Clients> findAllByOddIds(); // return 2%2=0 четні all clients
+
+    @Query("from Clients where mod(id,2)=1")
+    public Iterable<Clients> findAllByNoOddId(); // return 2%2=0 all нечетні clients
 
     @Query("select good from Clients") // return all goods
     public Iterable<String> findAllBygood();

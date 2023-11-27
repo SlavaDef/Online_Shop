@@ -24,5 +24,20 @@ public class ControllerForQuery {
         return clientRepo.findAllBygood();
     }
 
+    @GetMapping("/id")
+    public Iterable<Clients> findAllOddId(){
+        return clientRepo.findAllByOddIds();
+    }
+
+    @GetMapping("/noOdd")
+    public Iterable<Clients> findAllNoOddId(){
+        return clientRepo.findAllByNoOddId();
+    }
+
+    @GetMapping("/odd")
+    public Iterable<Clients> getOddClients(){ // without Iterable does'not work
+        return clientRepo.findAllByIds();
+    }
+
 
 }
